@@ -17,14 +17,17 @@ export class ProductComponent implements OnInit {
 
   @Output()
   saveEmitter = new EventEmitter();
-  
+
   constructor() { }
 
   ngOnInit(): void {
   }
 
   save(){
-    this.saveEmitter.emit();
+    this.saveEmitter.emit(true);
   }
 
+  cancel(){
+    this.saveEmitter.emit(false);
+  }
 }
