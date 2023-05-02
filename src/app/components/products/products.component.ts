@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Category } from 'src/app/interfaces/Category';
 import { Product } from 'src/app/interfaces/Product';
 import { CategoryService } from 'src/app/services/category.service';
@@ -16,8 +17,11 @@ export class ProductsComponent implements OnInit {
   product: Product = {} as Product;
   products: Product[] = [];
   showForm: boolean = false;
+  isEditing: boolean = false;
 
-  constructor(private categoryService: CategoryService, private productService: ProductService) { }
+  constructor(private categoryService: CategoryService,
+              private productService: ProductService,
+              private modalService: NgbModal ) { }
 
   ngOnInit(): void {
     this.loadProducts();
@@ -39,13 +43,20 @@ export class ProductsComponent implements OnInit {
   saveProduct(save: boolean) {
 
     if (save) {
-      this.productService.save(this.product).subscribe({
-        next: data => {
-          this.products.push(data);
-        }
-      });
+      if(this.isEditing){
+        this.productService.update(this.product).subscribe();
+      }else{
+        this.productService.save(this.product).subscribe({
+          next: data => {
+            this.products.push(data);
+          }
+        });
+      }
+
+
       this.product = {} as Product;
       this.showForm = false;
+      this.isEditing = false;
     }
 
   }
@@ -55,11 +66,23 @@ export class ProductsComponent implements OnInit {
   }
 
   edit(product: Product) {
-    console.log(product);
+    this.product = product;
+    this.showForm = true;
+    this.isEditing = true;
   }
 
-  delete(product: Product) {
-    console.log(product);
-  }
+  delete(modal: any, product: Product) {
+    this.modalService.open(modal).result.then(
+      (confirm) => {
+        if (confirm) {
+          this.productService.delete(product).subscribe({
+            next: () => {
+              this.products = this.products.filter(p => p.id !== product.id);
+            }
+          });
+        }
+      }
+    );
 
+  }
 }

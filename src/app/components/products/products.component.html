@@ -5,7 +5,8 @@
 
 <div class="container mt-3">
     <app-product  *ngIf="showForm" [product]="product" (saveEmitter)="saveProduct($event)" ></app-product>
-  <div *ngIf="!showForm">
+
+    <div *ngIf="!showForm">
         <button class="btn btn-primary" (click)="create()"> Novo </button>
         <div class="display-6">
         Produtos Cadastrados:
@@ -25,19 +26,19 @@
                   </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let product of products">
-                        <td>{{product.id}}</td>
-                        <td>{{product.name}}</td>
-                        <td>{{product.description}}</td>
-                        <td>{{product.price | currency: 'BRL'}}</td>
-                        <td>{{product.category.name}}</td>
+                    <tr *ngFor="let p of products">
+                        <td>{{p.id}}</td>
+                        <td>{{p.name}}</td>
+                        <td>{{p.description}}</td>
+                        <td>{{p.price | currency: 'BRL'}}</td>
+                        <td>{{p.category.name}}</td>
                         <td>
-                            <span *ngIf="product.promotion"  class='badge bg-success text-white me-1'>P</span>
-                            <span *ngIf="product.newProduct" class='badge bg-primary text-white'>L</span>
+                            <span *ngIf="p.promotion"  class='badge bg-success text-white me-1'>P</span>
+                            <span *ngIf="p.newProduct" class='badge bg-primary text-white'>L</span>
                         </td>
                         <td class="text-end">
-                          <button class="btn p-1 " (click)="edit(product)"><i class="bi bi-pencil"></i></button>
-                          <button class="btn p-1 " (click)="delete(product)"><i class="bi bi-trash3"></i></button>
+                          <button class="btn p-1 " (click)="edit(p)"><i class="bi bi-pencil"></i></button>
+                          <button class="btn p-1 " (click)="delete(confirmModal,p)"><i class="bi bi-trash3"></i></button>
 
                         </td>
                     </tr>
@@ -46,6 +47,22 @@
         </div>
     </div>
   </div>
+
+
+  <ng-template #confirmModal let-modal>
+
+    <div class="modal-header">
+        <h5 class="modal-title">Remover Produto</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="modal.close()"></button>
+      </div>
+      <div class="modal-body">
+        <p>Deseja remover o produto?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal" (click)="modal.close(true)">Confirmar</button>
+        <button type="button" class="btn btn-primary" (click)="modal.close()">Cancelar</button>
+      </div>
+  </ng-template>
 
 </div>
 
